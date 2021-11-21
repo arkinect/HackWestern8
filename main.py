@@ -12,7 +12,7 @@ date = {"month":int(tempDate[:tempDate.find("-")]),"day":int(tempDate[tempDate.f
 holidays = {12:[30,25,26],1:[1],5:[24],7:[1],9:[6],10:[11]} # study citation
 WesternEvents = 0
 # function uses data from https://www.cihi.ca/sites/default/files/document/improving_health_system_efficiency_in_canada_description_methods_en.pdf
-def checkPrecip():
+def checkPrecip(volume, hospital):
     tempVolume = volume
     precip = getPrecip()
     if precip >= 50:
@@ -24,7 +24,7 @@ def checkPrecip():
     return tempVolume
 
 # function uses data from https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3738307/
-def checkTemp():
+def checkTemp(volume, hospital):
     tempVolume = volume
     temperature = getTemp()
     if temperature >29:
@@ -35,7 +35,7 @@ def checkTemp():
             tempVolume += tempVolume*0.014
     return tempVolume
 
-def checkHoliday():
+def checkHoliday(volume, hospital):
     tempVolume = volume
     for month in holidays:
         if date["month"] == month:
@@ -43,7 +43,7 @@ def checkHoliday():
                 tempVolume+=tempVolume*0.12
     return tempVolume
 
-def checkWeekday():  # eventually this would be expanded to incorporate uni calendars to account for exam periods, and events
+def checkWeekday(volume, hospital):  # eventually this would be expanded to incorporate uni calendars to account for exam periods, and events
     if date["weekday"]==0:  # monday
         social = 0
     elif date["weekday"]==1:  # tuesday
@@ -61,17 +61,14 @@ def checkWeekday():  # eventually this would be expanded to incorporate uni cale
     return md.returnFinalUniCount(social, hospital)
 
 
-def main():
-    volume = checkPrecip()
-    volume = checkTemp()
-    volume = checkHoliday()
-    volume += checkWeekday()
-    json_formatted_str = json.dump("The estimated volume is",int(volume))
+def main(volume, hospital):
+    volume = checkPrecip(volume, hospital)
+    volume = checkTemp(volume, hospital)
+    volume = checkHoliday(volume, hospital)
+    volume += checkWeekday(volume, hospital)
+    # json_formatted_str = json.dump("The estimated volume is " + str(int(volume)))
     # print("The estimated volume is",int(volume))
-    print(json_formatted_str)
+    # print(json_formatted_str)
+    return volume
 
-main()
-
-def outputFlask:
-    from flask import Flask:
-    
+print(main(volume, hospital))
